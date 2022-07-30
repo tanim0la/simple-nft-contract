@@ -8,8 +8,8 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 contract SimpleNFT is ERC721, Ownable {
     string public baseURIextended;
 
-    uint public MAX_SUPPLY;
-    uint public TOTAL_SUPPLY;
+    uint public totalSupply;
+    uint public maxSupply;
 
     bool public notPaused;
     bool public revealed;
@@ -28,12 +28,12 @@ contract SimpleNFT is ERC721, Ownable {
     function MintNft(bytes32[] memory proof) public {
         require(notPaused, "MINT IS PAUSED!!!");
         require(isValid(proof, keccak256((abi.encodePacked(msg.sender)))), "ADDRESS NOT WHITELISTED!!!");
-        require(TOTAL_SUPPLY < MAX_SUPPLY, "MINTED OUT!!!");
+        require(totalSupply < maxSupply, "MINTED OUT!!!");
         require(!minted[msg.sender], "MINTED ALREADY!!!");
 
         minted[msg.sender] = true;
-        _safeMint(msg.sender, TOTAL_SUPPLY);
-        TOTAL_SUPPLY++;
+        _safeMint(msg.sender, totalSupply);
+        totalSupply++;
     }
 
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
